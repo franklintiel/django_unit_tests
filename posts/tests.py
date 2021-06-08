@@ -1,28 +1,81 @@
 from django.test import TestCase
+from .models import Post
+from .forms import FormPost
+from django.contrib.auth.models import User
+from faker import Factory
+
+fake = Factory.create()
 
 
 class PostTestCase(TestCase):
 
+    def setUp(self):
+        self.user = User.objects.create(username=fake.user_name(),
+                                        first_name=fake.first_name(),
+                                        last_name=fake.last_name(),
+                                        email=fake.ascii_company_email())
+
+        self.post = Post.objects.create(user=self.user, text_content=fake.paragraph(nb_sentences=3))
+
+    def tearDown(self):
+        if self.user is not None:
+            self.user.delete()
+            self.post.delete()
+
     def test_create_post_success(self):
-        pass
+        form = FormPost(data={"user": self.user, "text_content": fake.paragraph(nb_sentences=3), "state": True})
+        self.assertTrue(form.is_valid())
+        form.save()
 
     def test_create_post_invalid_fields(self):
-        pass
+        form = FormPost(data={"user": None, "text_content": None, "state": False})
+        self.assertFalse(form.is_valid())
 
     def test_update_post(self):
-        pass
+        post1 = Post.objects.all().last()
+        form = FormPost(data={"user": post1.user,
+                              "text_content": post1.text_content,
+                              "state": False})
+        self.assertTrue(form.is_valid())
+        form.save()
 
     def test_update_post_invalid_fields(self):
-        pass
+        post1 = Post.objects.all().last()
+        form = FormPost(data={"user": post1.user,
+                              "text_content": '',
+                              "state": True})
+        self.assertFalse(form.is_valid())
 
     def test_update_post_not_found(self):
-        pass
+        resp = True
+        try:
+            last_post = Post.objects.get(id=2)
+            if last_post:
+                last_post.state = True
+                last_post.save()
+        except Post.DoesNotExist:
+            resp = False
+        self.assertFalse(resp)
 
     def test_delete_post(self):
-        pass
+        resp = True
+        try:
+            last_post = Post.objects.get(id=1)
+            if last_post:
+                last_post.delete()
+        except Post.DoesNotExist:
+            resp = False
+        self.assertTrue(resp)
 
     def test_delete_post_not_found(self):
-        pass
+        resp = True
+        try:
+            last_post = Post.objects.get(id=2)
+            if last_post:
+                last_post.delete()
+        except Post.DoesNotExist:
+            resp = False
+        self.assertFalse(resp)
 
     def test_publish_post(self):
         pass
