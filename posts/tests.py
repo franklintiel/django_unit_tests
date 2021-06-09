@@ -1,28 +1,42 @@
 from django.test import TestCase
-
+from .models import Post
+from posts import posts
+from django.contrib.auth.models import User
+from .posts import postestings
 
 class PostTestCase(TestCase):
 
     def test_create_post_success(self):
-        pass
+        post=postestings.create_post(title='ESTE ES EL TITULO', content='Soy el contenido de este post de Maryori Sabalza', created_at='08:06:2021', creator='Maryori Sabalza')
+        self.assertEqual(post)
+        post.save()
 
     def test_create_post_invalid_fields(self):
-        pass
-
+        post=postestings.create_post(title=None, content=None, created_at='08:06:2021', creator='Maryori Sabalza')
+        self.assertEqual(post)
+    
     def test_update_post(self):
-        pass
+        post=postestings.update_post(content='Nuevo contenido', created_at='09:06:2021')
+        self.assertEqual(post)
+        post.save()
 
     def test_update_post_invalid_fields(self):
-        pass
+        post=postestings.update_post(content=None, created_at=None)
+        self.assertEqual(post)
 
     def test_update_post_not_found(self):
-        pass
+        post=postestings.update_post(title='este post existe')
+        self.assertEqual(post.not_found)
+        self.assertEqual(response.status_code, 404)
 
     def test_delete_post(self):
-        pass
+        post=postestings.update_post(title='ESTE ES EL TITULO',)
+        self.assertEqual(post.delete())
+
 
     def test_delete_post_not_found(self):
-        pass
+        post=postestings.update_post(title='este post existe')
+        self.assertEqual(response.status_code, 404)
 
     def test_publish_post(self):
         pass
