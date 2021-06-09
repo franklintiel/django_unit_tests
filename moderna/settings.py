@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'posts',
     'mailers',
     'authentications',
+    'rest_framework.authtoken',
     'api'
 ]
 
