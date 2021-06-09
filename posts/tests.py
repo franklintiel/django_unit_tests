@@ -15,8 +15,12 @@ class PostTestCase(TestCase):
         posts = Publicar_Post_form(data={"creador": self.post.creador,
                                          "comentarios": self.post.comentarios,
                                          "correo": self.post.correo})
-        self.assertTrue(posts.is_valid())
+        self.assertIsNotNone(self.post.creador)
+        self.assertIsNotNone(self.post.comentarios)
+        self.assertIsNotNone(self.post.correo)
         posts.save()
+        self.assertTrue(posts.is_valid())
+
 
     def test_create_post_invalid_fields(self):
         posts = Publicar_Post_form(data={"creador":None, "comentarios": self.post.comentarios, "correo": self.post.correo})
@@ -27,14 +31,17 @@ class PostTestCase(TestCase):
         form = Publicar_Post_form(data={"creador": post.creador,
                                          "comentarios": post.comentarios,
                                          "correo": post.correo})
-        self.assertTrue(form.is_valid())
+        self.assertIsNotNone(self.post.creador)
+        self.assertIsNotNone(self.post.comentarios)
+        self.assertIsNotNone(self.post.correo)
         form.save()
-
+        self.assertTrue(form.is_valid())
     def test_update_post_invalid_fields(self):
         post = Publicar_Post.objects.all().last()
         form = Publicar_Post_form(data={"creador":None,
                                         "comentarios": post.comentarios,
                                         "correo": post.correo})
+
         self.assertFalse(form.is_valid())
 
     def test_update_post_not_found(self):
