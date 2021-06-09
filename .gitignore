@@ -2,3 +2,5 @@
 .python-version
 .idea/
 .coverage
+venv/
+db.sqlite3
