@@ -3,7 +3,6 @@ from rest_framework.authtoken.models import Token
 
 
 class BaseAuthentication:
-
     def authenticate(self, username: str, password: str):
         if username is not None and password is not None:
             user: User = self.get_user(username=username)
