@@ -1,5 +1,6 @@
 from django.test import TestCase
-
+from .backends import BaseAuthentication
+from django.contrib.auth.models import User
 
 class PostTestCase(TestCase):
 
