@@ -1,21 +1,52 @@
 from django.test import TestCase
+from .forms import *
+from .models import *
+from django.contrib.auth.models import User
 
 
 class PostTestCase(TestCase):
 
+    def setUp(self):
+        self.user = User.objects.create(username='john.admin', first_name='John',
+                                        last_name='Doe', email='info@domain.com')
+
+        self.post = Posts.objects.create(user=self.user, text='Hola, este es mi primer posts')
+
+    def tearDown(self):
+        if self.user is not None:
+            self.user.delete()
+            self.post.delete()
+
     def test_create_post_success(self):
-        pass
+        form = FormPosts(data={
+                "user": self.user,
+                "text": 'Hola, este es mi primer posts'
+        })
+        self.assertTrue(form.is_valid())
 
     def test_create_post_invalid_fields(self):
-        pass
+        form = FormPosts(data={
+                "user": self.user,
+                "text": None
+        })
+        self.assertFalse(form.is_valid())
 
     def test_update_post(self):
-        pass
+        p = Posts.objects.all().last()
+        form = FormPosts(data={"user": p.user,
+                               "text": 'Hola, Esta es la modificacion del texto',
+                               })
+        self.assertTrue(form.is_valid())
 
     def test_update_post_invalid_fields(self):
-        pass
+        p = Posts.objects.all().last()
+        form = FormPosts(data={"user": p.user,
+                               "text": None,
+                               })
+        self.assertFalse(form.is_valid())
 
     def test_update_post_not_found(self):
+
         pass
 
     def test_delete_post(self):
