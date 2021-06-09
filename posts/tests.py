@@ -1,28 +1,61 @@
 from django.test import TestCase
+from .models import *
+from .forms import Publicar_Post_form
+from django.contrib.auth.models import User
 
 
 class PostTestCase(TestCase):
 
+    def setUp(self):
+        self.post = Publicar_Post.objects.create(creador='demo',
+                                            comentarios='demo',
+                                            correo='demo@gmail.com')
+
     def test_create_post_success(self):
-        pass
+        posts = Publicar_Post_form(data={"creador": self.post.creador,
+                                         "comentarios": self.post.comentarios,
+                                         "correo": self.post.correo})
+        self.assertTrue(posts.is_valid())
+        posts.save()
 
     def test_create_post_invalid_fields(self):
-        pass
+        posts = Publicar_Post_form(data={"creador":None, "comentarios": self.post.comentarios, "correo": self.post.correo})
+        self.assertFalse(posts.is_valid())
 
     def test_update_post(self):
-        pass
+        post = Publicar_Post.objects.all().last()
+        form = Publicar_Post_form(data={"creador": post.creador,
+                                         "comentarios": post.comentarios,
+                                         "correo": post.correo})
+        self.assertTrue(form.is_valid())
+        form.save()
 
     def test_update_post_invalid_fields(self):
-        pass
+        post = Publicar_Post.objects.all().last()
+        form = Publicar_Post_form(data={"creador":None,
+                                        "comentarios": post.comentarios,
+                                        "correo": post.correo})
+        self.assertFalse(form.is_valid())
 
     def test_update_post_not_found(self):
-        pass
+        with self.assertRaises(Publicar_Post.DoesNotExist):
+            instancia = Publicar_Post.objects.get(pk=2)
 
     def test_delete_post(self):
-        pass
+      with self.assertRaises(Publicar_Post.DoesNotExist):
+          pk= self.post.pk
+          self.post.delete()
+          instancia = Publicar_Post.objects.get(pk=pk)
 
     def test_delete_post_not_found(self):
-        pass
+        resp = True
+        try:
+            not_post = Publicar_Post.objects.get(id=3)
+            if not_post:
+                not_post.delete()
+        except Publicar_Post.DoesNotExist:
+            resp = False
+        self.assertFalse(resp)
 
     def test_publish_post(self):
         pass
